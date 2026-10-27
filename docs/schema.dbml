@@ -1,0 +1,74 @@
+// Встроенная таблица Django: вход, пароль, подтверждение почты
+Table auth_user {
+  id integer [pk, increment]
+  username varchar(150) [not null, unique]
+  email varchar(254) [not null, unique]
+  password varchar(128) [not null, note: 'хеш пароля']
+  is_active boolean [not null, note: 'false до подтверждения e-mail']
+  is_staff boolean [not null, note: 'true — администратор']
+}
+
+// Профиль: какие показатели ведёт пользователь
+Table profile {
+  id integer [pk, increment]
+  user_id integer [not null, unique]
+  height_cm integer [note: 'рост, см']
+  track_sleep boolean [not null, default: true]
+  track_calories boolean [not null, default: true]
+  track_water boolean [not null, default: true]
+  track_activity boolean [not null, default: true]
+  track_weight boolean [not null, default: true]
+  track_mood boolean [not null, default: true]
+  setup_done boolean [not null, default: false, note: 'прошёл первичную настройку']
+}
+
+// Цель: показатель, значение, срок
+Table goal {
+  id integer [pk, increment]
+  user_id integer [not null]
+  metric varchar(20) [not null, note: 'weight / sleep / water / calories / activity / mood']
+  start_value decimal(6,1) [not null, note: 'значение при постановке цели']
+  target_value decimal(6,1) [not null]
+  start_date date [not null]
+  deadline date [not null]
+  is_active boolean [not null, default: true]
+}
+
+// Запись дня
+Table daily_entry {
+  id integer [pk, increment]
+  user_id integer [not null]
+  date date [not null]
+  sleep_hours decimal(3,1) [note: 'сон, часы']
+  weight_kg decimal(5,1) [note: 'вес, кг']
+  calories integer [note: 'калории за день']
+  water_ml integer [note: 'вода, мл']
+  mood integer [note: 'самочувствие, 1–5']
+  note text [note: 'заметка о дне']
+
+  indexes {
+    (user_id, date) [unique, note: 'одна запись на дату']
+  }
+}
+
+// Справочник видов активности — заполняет администратор
+Table activity_type {
+  id integer [pk, increment]
+  name varchar(50) [not null, unique, note: 'бег, зал, плавание…']
+  kcal_per_hour integer [note: 'примерный расход ккал в час']
+}
+
+// Тренировки: несколько за день
+Table workout {
+  id integer [pk, increment]
+  entry_id integer [not null]
+  activity_type_id integer [not null]
+  duration_min integer [not null, note: 'длительность, мин']
+  intensity integer [not null, note: '1 — лёгкая, 2 — средняя, 3 — высокая']
+}
+
+Ref: profile.user_id - auth_user.id
+Ref: goal.user_id > auth_user.id
+Ref: daily_entry.user_id > auth_user.id
+Ref: workout.entry_id > daily_entry.id
+Ref: workout.activity_type_id > activity_type.id
