@@ -30,7 +30,7 @@
 ## Как запустить
 
 ```bash
-git clone https://github.com/<user>/health-diary.git
+git clone https://github.com/107031/health-diary.git
 cd health-diary
 python -m venv venv
 # Windows:
