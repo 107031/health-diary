@@ -218,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Django
+media/
+staticfiles/
+
+# IDE
+.idea/
+.vscode/
+
+# Секреты
+.env
