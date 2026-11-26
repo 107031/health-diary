@@ -133,3 +133,16 @@ class Workout(models.Model):
 
     def __str__(self):
         return f'{self.activity_type} {self.duration_min} мин'
+
+
+class Habit(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField('привычка', max_length=100)
+    completed_days = models.ManyToManyField(DailyEntry, blank=True, related_name='completed_habits')
+
+    class Meta:
+        ordering = ['name']
+        constraints = [models.UniqueConstraint(fields=['user', 'name'], name='unique_user_habit')]
+
+    def __str__(self):
+        return self.name

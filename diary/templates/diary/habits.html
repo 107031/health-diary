@@ -1,0 +1,25 @@
+{% extends "diary/base.html" %}
+{% block content %}
+<h1>Мои привычки</h1>
+<form method="get">
+    {{ selector.as_p }}
+    <button>Показать отметки</button>
+</form>
+<form method="post">
+    {% csrf_token %}
+    {{ marks.date.as_hidden }}{{ marks.date.errors }}
+    {{ marks.habits.errors }}
+    {% if marks.habits.field.queryset %}
+        {{ marks.habits }}
+        <button name="action" value="mark">Сохранить отметки</button>
+    {% else %}
+        <p>Добавьте первую привычку, чтобы отмечать её по дням.</p>
+    {% endif %}
+</form>
+<h2>Добавить привычку</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ new_habit.as_p }}
+    <button name="action" value="add">Добавить</button>
+</form>
+{% endblock %}

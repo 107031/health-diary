@@ -1,17 +1,9 @@
 {% extends "diary/base.html" %}
 
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Дневник здоровья</title>
-</head>
-<body>
     <h1>Привет! Это «Дневник здоровья»</h1>
-    <p>Каркас проекта работает.</p>
-</body>
-</html>
-
+    <p><a href="{% url 'habits' %}">Мои привычки</a></p>
+    <p><a href="{% url 'stats_summary' %}?period=week">Сводка за неделю</a></p>
+    <p><a href="{% url 'stats_summary' %}?period=month">Сводка за 30 дней</a></p>
+    <p><a href="{% url 'observations' %}">Наблюдения</a></p>
 {% endblock %}
