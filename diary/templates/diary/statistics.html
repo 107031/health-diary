@@ -1,0 +1,15 @@
+{% extends 'diary/base.html' %}
+{% block title %}Статистика — Дневник здоровья{% endblock %}
+{% block content %}
+<h1>Статистика</h1>
+<p><a href="?period=week">Неделя</a> · <a href="?period=month">30 дней</a></p>
+<p>{{ start|date:'d.m.Y' }} — {{ end|date:'d.m.Y' }}. Дней с записями: {{ recorded_days }}.</p>
+<dl>
+    <dt>Средний сон, ч</dt><dd>{{ averages.sleep_hours|default_if_none:'Нет записей' }}</dd>
+    <dt>Средние калории, ккал</dt><dd>{{ averages.calories|default_if_none:'Нет записей' }}</dd>
+    <dt>Всего активности, мин</dt><dd>{{ activity_minutes }}</dd>
+    <dt>Выполнение привычек</dt><dd>{% if possible_marks %}{{ habit_percent }}% ({{ completed_marks }} из {{ possible_marks }}){% else %}Нет привычек{% endif %}</dd>
+    <dt>Цель по весу</dt><dd>{% if weight_goal %}Старт {{ weight_goal.start_kg }} кг · сейчас {{ weight_goal.current_kg|default_if_none:'—' }} кг · цель {{ weight_goal.target_kg }} кг. Прогресс: {{ weight_goal.percent|default_if_none:'—' }}%.{% else %}Цель пока не задана.{% endif %}</dd>
+</dl>
+{% include 'diary/observations.html' %}
+{% endblock %}

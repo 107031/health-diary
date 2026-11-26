@@ -31,22 +31,23 @@ class DayForm(forms.Form):
 
 
 class EntryForm(DayForm, forms.ModelForm):
+    weight_kg = forms.DecimalField(label='Вес, кг', min_value=20, max_value=300, decimal_places=1, required=False)
+    calories = forms.IntegerField(label='Калории, ккал', min_value=0, max_value=10000, required=False)
+
     class Meta:
         model = DailyEntry
         fields = ['date', 'sleep_hours', 'weight_kg', 'calories', 'water_ml', 'mood', 'note']
 
 
 class ActivityForm(forms.Form):
-    activity = forms.CharField(max_length=50, required=False)
-    duration_min = forms.IntegerField(min_value=1, max_value=1440, required=False)
-    intensity = forms.TypedChoiceField(choices=Workout.Intensity.choices, coerce=int, required=False)
+    activity = forms.CharField(label='Вид активности', max_length=50, required=False)
+    duration_min = forms.IntegerField(label='Активность, мин', min_value=0, max_value=1440, required=False)
+    intensity = forms.TypedChoiceField(label='Интенсивность', choices=[('', '—'), *Workout.Intensity.choices], coerce=int, required=False)
 
     def clean(self):
         values = super().clean()
-        if any(self.data.get(key) for key in self.fields):
-            for key in ('activity', 'duration_min'):
-                if not values.get(key) and key not in self.errors:
-                    self.add_error(key, 'Укажите вид активности и длительность.')
+        if (values.get('activity') or values.get('intensity')) and 'duration_min' not in self.errors and values.get('duration_min') is None:
+            self.add_error('duration_min', 'Укажите длительность в минутах.')
         return values
 
 

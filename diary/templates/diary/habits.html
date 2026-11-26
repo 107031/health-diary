@@ -22,4 +22,10 @@
     {{ new_habit.as_p }}
     <button name="action" value="add">Добавить</button>
 </form>
+{% if personal %}<h2>Список привычек</h2>
+{% for habit in personal %}
+<form method="post">{% csrf_token %}<input type="hidden" name="habit_id" value="{{ habit.pk }}">
+    {{ habit.name }} <button name="action" value="delete">Удалить</button>
+</form>
+{% endfor %}{% endif %}
 {% endblock %}

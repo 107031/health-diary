@@ -20,3 +20,5 @@ urlpatterns += [
 urlpatterns.append(path('stats/summary/', summary, name='stats_summary'))
 
 urlpatterns.append(path('observations/', observations, name='observations'))
+
+urlpatterns.append(path('stats/', summary, name='statistics'))

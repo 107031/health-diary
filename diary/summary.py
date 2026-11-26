@@ -43,5 +43,17 @@ def summary(request):
                 percent = 100 if weight == goal.target_value else 0
         progress = {'start_kg': float(goal.start_value), 'target_kg': float(goal.target_value),
                     'current_kg': float(weight) if weight is not None else None, 'percent': percent}
-    return JsonResponse({'start': start, 'end': end, 'recorded_days': count,
-                         'averages': averages, 'weight_goal': progress})
+    from .models import Habit, HabitMark
+    from .analysis import analyze
+    from django.shortcuts import render
+
+    habits = Habit.objects.filter(user=request.user)
+    possible = habits.count() * days
+    completed = HabitMark.objects.filter(habit__in=habits, entry__in=entries).count()
+    context = {'start': start, 'end': end, 'recorded_days': count, 'averages': averages,
+               'weight_goal': progress, 'activity_minutes': minutes, 'completed_marks': completed,
+               'possible_marks': possible, 'habit_percent': round(100 * completed / possible, 1) if possible else None}
+    if request.resolver_match.url_name == 'statistics':
+        context.update(analyze(request.user, start, end))
+        return render(request, 'diary/statistics.html', context)
+    return JsonResponse(context)

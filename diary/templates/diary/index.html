@@ -2,8 +2,9 @@
 
 {% block content %}
     <h1>Привет! Это «Дневник здоровья»</h1>
+    <p><a href="{% url 'save_day' %}">Мой день</a></p>
     <p><a href="{% url 'habits' %}">Мои привычки</a></p>
-    <p><a href="{% url 'stats_summary' %}?period=week">Сводка за неделю</a></p>
-    <p><a href="{% url 'stats_summary' %}?period=month">Сводка за 30 дней</a></p>
+    <p><a href="{% url 'statistics' %}?period=week">Сводка за неделю</a></p>
+    <p><a href="{% url 'statistics' %}?period=month">Сводка за 30 дней</a></p>
     <p><a href="{% url 'observations' %}">Наблюдения</a></p>
 {% endblock %}

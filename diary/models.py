@@ -138,7 +138,7 @@ class Workout(models.Model):
 class Habit(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField('привычка', max_length=100)
-    completed_days = models.ManyToManyField(DailyEntry, blank=True, related_name='completed_habits')
+    completed_days = models.ManyToManyField(DailyEntry, through='HabitMark', blank=True, related_name='completed_habits')
 
     class Meta:
         ordering = ['name']
@@ -146,3 +146,12 @@ class Habit(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class HabitMark(models.Model):
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    entry = models.ForeignKey(DailyEntry, db_column='dailyentry_id', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'diary_habit_completed_days'
+        unique_together = [('habit', 'entry')]

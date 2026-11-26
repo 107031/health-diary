@@ -1,0 +1,16 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h1>Мой день</h1>
+<form method="get">{{ picker.as_p }}<button>Открыть день</button></form>
+{% if saved %}<p>Запись сохранена.</p>{% endif %}
+<form method="post">
+    {% csrf_token %}<input type="hidden" name="browser_form" value="1">
+    {{ form.as_p }}
+    <fieldset><legend>Активность</legend>
+        {% for workout in entry.workouts.all %}<p>{{ workout }}</p>{% endfor %}
+        {{ activity.as_p }}
+    </fieldset>
+    <fieldset><legend>Выполненные привычки</legend>{{ marks.habits.errors }}{{ marks.habits }}</fieldset>
+    <button>Сохранить день</button>
+</form>
+{% endblock %}
